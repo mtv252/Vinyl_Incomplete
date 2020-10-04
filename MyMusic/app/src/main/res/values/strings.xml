@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyMusic</string>
+    <string name="this_week_s_selection">this week\'s selection:</string>
+    <string name="icon_now_playing">Now Playing</string>
+    <string name="icon_recently_played">Recents</string>
+    <string name="icon_library">Library</string>
+</resources>
