@@ -24,6 +24,8 @@ public class LibraryActivity extends AppCompatActivity {
 
         Resources res = getResources();
 
+        //Creates the library of albums the user can select.
+
         ArrayList<Album> albums = new ArrayList<>();
         albums.add(new Album("Owls", "Owls", R.drawable.owls));
         albums.add(new Album("Xenia Rubinos", "Black Terry Cat", R.drawable.black_terry_cat));
@@ -32,20 +34,30 @@ public class LibraryActivity extends AppCompatActivity {
         albums.add(new Album("Owls", "Owls", R.drawable.owls));
         albums.add(new Album("Xenia Rubinos", "Black Terry Cat", R.drawable.black_terry_cat));
 
+        /**
+         * instantiates a list to store albums the user has played, and checks to see if
+         * there's any info from previous activities
+         */
+
         final ArrayList<Album> recentlyPlayed = new ArrayList<Album>();
         if (getIntent().getExtras() != null) {
             ArrayList recentList = (ArrayList) getIntent().getSerializableExtra("recentList");
             recentlyPlayed.addAll(recentList);
         }
 
+
+        // Creates a gridAdapter applies it to the library of albums.
+
         AlbumAdapter libraryAdapter = new AlbumAdapter(this, albums);
 
         final GridView gridView = (GridView) findViewById(R.id.album_library);
+       // Sets a click listener to each item of thd grid that will bring user to NowPlaying.
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(LibraryActivity.this, NowPlayingActivity.class);
                 Album instance = (Album) gridView.getItemAtPosition(i);
+                // Checks to see if the album is already on the Recents list before adding it to the top of the list
                 if (recentlyPlayed != null) {
                     for (Album j : recentlyPlayed) {
                         if (j.getAlbumName().equals(instance.getAlbumName())) {
@@ -55,12 +67,15 @@ public class LibraryActivity extends AppCompatActivity {
                     }
                 }
                 recentlyPlayed.add(0, instance);
+                //Stores data on the selected album to pass to the NowPlaying activity
                 intent.putExtra("Album", instance);
                 intent.putExtra("recentList", recentlyPlayed);
                 startActivity(intent);
             }
         });
         gridView.setAdapter(libraryAdapter);
+
+        //Rigs the Bottom Navigation Bar up to move between activites, and bring relevant info along.
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.nav_main_activity);

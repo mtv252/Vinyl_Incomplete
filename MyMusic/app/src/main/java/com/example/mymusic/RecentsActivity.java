@@ -26,59 +26,56 @@ public class RecentsActivity extends AppCompatActivity {
         headerText.setText("Recently Played");
 
         final Album selection;
-        final ArrayList<Album> recentList;
-
+        final ArrayList<Album> recentlyPlayed = new ArrayList<Album>();
+        //Receives info on the previous albums selected by the user.
         if (getIntent().getExtras() != null) {
-            selection = (Album) getIntent().getSerializableExtra("Album");
-            recentList = (ArrayList<Album>) getIntent().getSerializableExtra("recentList");
+            ArrayList recentList = (ArrayList) getIntent().getSerializableExtra("recentList");
+            recentlyPlayed.addAll(recentList);
 
-            AlbumAdapter libraryAdapter = new AlbumAdapter(this, recentList);
-
+            //Applies an ArrayAdapter to the list of previously selected albums.
+            AlbumAdapter libraryAdapter = new AlbumAdapter(this, recentlyPlayed);
             final GridView gridView = (GridView) findViewById(R.id.album_library);
             gridView.setAdapter(libraryAdapter);
+            // Sets a click listener to each item of thd grid that will bring user to NowPlaying.
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Intent intent = new Intent(RecentsActivity.this, NowPlayingActivity.class);
                     Album instance = (Album) gridView.getItemAtPosition(i);
-                        for (Album j : recentList) {
-                            if (j.getAlbumName().equals(instance.getAlbumName())) {
-                                recentList.remove(j);
-                                break;
-                            }
-                        }
-                    recentList.add(0, instance);
+                    //Checks if an album is already on the list before adding it on.
+                    recentlyPlayed.remove(i);
+                    recentlyPlayed.add(0, instance);
                     intent.putExtra("Album", instance);
-                    intent.putExtra("RecentList", recentList);
+                    intent.putExtra("RecentList", recentlyPlayed);
                     startActivity(intent);
                 }
             });
         }
-        BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.nav_main_activity);
+
+        //Sets up the Bottom Navigation Bar
+        final BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_main_activity);
         bottomNavigationView.setSelectedItemId(R.id.nav_recently_played);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.nav_now_playing:
                                 Intent intent1 = new Intent(RecentsActivity.this, NowPlayingActivity.class);
-                                if(getIntent().getExtras() != null) {
+                                if (getIntent().getExtras() != null) {
                                     Album selection = (Album) getIntent().getSerializableExtra("Album");
-                                    ArrayList<Album> recentList = (ArrayList) getIntent().getSerializableExtra("recentList");
                                     intent1.putExtra("Album", selection);
-                                    intent1.putExtra("recentList", recentList);
+                                    intent1.putExtra("recentList", recentlyPlayed);
                                 }
                                 startActivity(intent1);
                                 return true;
                             case R.id.nav_library:
                                 Intent intent2 = new Intent(RecentsActivity.this, LibraryActivity.class);
-                                if(getIntent().getExtras() != null) {
+                                if (getIntent().getExtras() != null) {
                                     Album selection = (Album) getIntent().getSerializableExtra("Album");
-                                    ArrayList recentList = (ArrayList) getIntent().getSerializableExtra("recentList");
                                     intent2.putExtra("Album", selection);
-                                    intent2.putExtra("recentList", recentList);
+                                    intent2.putExtra("recentList", recentlyPlayed);
                                 }
                                 startActivity(intent2);
                                 return true;

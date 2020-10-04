@@ -9,7 +9,7 @@ public class Album implements Serializable {
     private String mAlbumName;
     private int mAlbumArt;
 
-    public Album(String artistName, String albumName, int albumArt){
+    public Album(String artistName, String albumName, int albumArt) {
         mArtistName = artistName;
         mAlbumName = albumName;
         mAlbumArt = albumArt;
